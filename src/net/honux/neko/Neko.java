@@ -36,27 +36,24 @@ public class Neko extends BxObject {
     public void update(int frame) {
         x += dx;
         y += dy;
-        if (checkStatus(CatStatus.STAND) && checkFrame(frame, getStatusImageSize(CatStatus.STAND.toString()) * 4)) {
+
+        if (!checkStatus(CatStatus.SLEEP) && !checkStatus(CatStatus.SLEEPY) && box.getCoins().isEmpty()) {
             setStatus(CatStatus.SLEEPY.toString(), frame);
         }
 
-        if (checkStatus(CatStatus.SLEEPY) && checkFrame(frame, getStatusImageSize(CatStatus.SLEEPY.toString()))) {
-            setStatus(CatStatus.SLEEP.toString(), frame);
-        }
-
-        if (checkStatus(CatStatus.SLEEPY) && checkFrame(frame, getStatusImageSize(CatStatus.SLEEPY.toString()))) {
-            setStatus(CatStatus.SLEEP.toString(), frame);
-        }
-
-        if (checkStatus(CatStatus.SLEEP) && checkFrame(frame, getStatusImageSize(CatStatus.SLEEP.toString()) * 4)) {
+        if(checkStatus(CatStatus.SLEEP) && !box.getCoins().isEmpty()) {
             setStatus(CatStatus.WAKE_UP.toString(), frame);
+        }
+
+        if (checkStatus(CatStatus.SLEEPY) && checkFrame(frame, getStatusImageSize(CatStatus.SLEEPY.toString()))) {
+            setStatus(CatStatus.SLEEP.toString(), frame);
         }
 
         if (checkStatus(CatStatus.WAKE_UP) && checkFrame(frame, getStatusImageSize(CatStatus.WAKE_UP.toString()))) {
             setStatus(CatStatus.STAND.toString(), frame);
         }
 
-        //System.out.printf("Neko: %s\n", status);
+        System.out.printf("Neko: %s\n", status);
     }
 
     private boolean checkFrame(int frame, int time) {

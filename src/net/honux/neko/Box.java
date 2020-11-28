@@ -65,7 +65,7 @@ public class Box implements Runnable {
     private void init(String title) {
         thread = new Thread(this);
         input = new Input(this);
-        neko = new Neko(this, DELAY, SCALE);
+        neko = new Neko(this, DELAY, 3);
         neko.setPosition(W / 2, H / 2);
         mainWindow = new MainWindow(title, this);
         renderer = new Renderer(this);
