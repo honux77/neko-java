@@ -12,7 +12,7 @@ import java.util.Map;
 
 public abstract class GameObject {
 
-    protected final MainWindow mainWindow;
+    protected final Box box;
     protected int w, h, size;
     protected double x, y, dx, dy;
     private Map<Integer, BufferedImage> allImages = new HashMap<>();
@@ -42,8 +42,8 @@ public abstract class GameObject {
         return scale;
     }
 
-    public GameObject(MainWindow mainWindow, int delay, int scale) {
-        this.mainWindow = mainWindow;
+    public GameObject(Box box, int delay, int scale) {
+        this.box = box;
         this.delay = delay;
         this.scale = scale;
         loadAllImages();

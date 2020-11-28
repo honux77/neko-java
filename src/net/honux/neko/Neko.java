@@ -4,8 +4,8 @@ import com.sun.tools.javac.Main;
 
 public class Neko extends GameObject {
 
-    public Neko(MainWindow window, int delay, int scale) {
-        super(window, delay, scale);
+    public Neko(Box box, int delay, int scale) {
+        super(box, delay, scale);
         setStatus(CatStatus.STAND.toString(), 0);
     }
 
@@ -58,7 +58,7 @@ public class Neko extends GameObject {
             setStatus(CatStatus.STAND.toString(), frame);
         }
 
-        System.out.println(status);
+        System.out.printf("Neko: %s\n", status);
     }
 
     private boolean checkFrame(int frame, int time) {

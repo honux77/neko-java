@@ -1,11 +1,12 @@
 package net.honux.neko;
 
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.*;
 import java.awt.*;
 
-public class MainWindow extends JFrame implements Runnable {
+public class MainWindow extends JFrame {
 
     private final String TITLE = "Neko App";
     public final static int SCALE = 2;
@@ -19,47 +20,30 @@ public class MainWindow extends JFrame implements Runnable {
     private Thread thread;
     private Input input;
     private Renderer renderer;
+    private Box box;
     private boolean running;
 
-    public MainWindow() {
-        initObjects();
-        initComponent();
-        initUI();
-        initOthers();
+    private BufferedImage image;
+    private Canvas canvas;
+    private Dimension dimension;
+    private Graphics graphics;
+
+    public MainWindow(String title, Box box) {
+        this.box = box;
     }
 
-    public Input getInput() {
-        return input;
-    }
-
-    public List<Coin> getCoins() {
-        return coins;
-    }
-
-    public int getFps() {
-        return fps;
-    }
-
-    private void initComponent() {
-        renderer = new Renderer(this);
-        input = new Input(this);
-
-    }
-
-    private void initOthers() {
-        thread = new Thread(this);
-    }
-
-    private void initObjects() {
-        neko = new Neko(this, DELAY, SCALE);
-    }
+//    private void initResource(Box box, Graphics g) {
+//        image = new BufferedImage(g.getWidth(), g.getHeight(), BufferedImage.TYPE_INT_RGB);
+//        canvas = new Canvas();
+//        canvas.setPreferredSize(dimension);
+//        canvas.setMaximumSize(dimension);
+//        canvas.setMinimumSize(dimension);
+//    }
 
     private void initUI() {
         setTitle(TITLE);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
-        add(renderer, BorderLayout.CENTER);
-        setSize(renderer.getSize());
         addMouseListener(input);
         addMouseMotionListener(input);
         setLocationRelativeTo(null);
@@ -68,80 +52,8 @@ public class MainWindow extends JFrame implements Runnable {
 
     }
 
-    public Neko getNeko() {
-        return neko;
-    }
-
-    public void start() {
-        thread.start();
-    }
-
-    public int getFrame() {
-        return frame;
-    }
-
-    public void update() {
-        renderer.update();
-    }
-
-    private void render() {
-        renderer.render();
-    }
-
-    public static void main(String[] args) {
-        MainWindow mainWindow = new MainWindow();
-        mainWindow.setVisible(true);
-        mainWindow.start();
-    }
-
-    @Override
-    public void run() {
-        running = true;
-        boolean render = false;
-        final double OB = 1000_000_000.0f;
-        double now;
-        double lastTime = System.nanoTime() / OB;
-        double passedTime;
-        double frameTime = 0;
-        double unprocessedTime = 0;
-        int lastFrame = 0;
-
-        while (running) {
-            now = System.nanoTime() / OB;
-            passedTime = now - lastTime;
-            unprocessedTime += passedTime;
-            frameTime += passedTime;
-            lastTime = now;
-
-            if (frameTime >= 1.0) {
-                fps = frame - lastFrame;
-                lastFrame = frame;
-                frameTime = 0;
-            }
-
-            while (unprocessedTime > GAP) {
-                unprocessedTime -= GAP;
-                render = true;
-                frame++;
-                update();
-            }
-
-            if (render) {
-                render = false;
-                render();
-            } else {
-                try {
-                    Thread.sleep(1);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-
-        }
-    }
-
-    public void addCoin(int x, int y) {
-        //smaller coin than Neko
-        coins.add(new Coin(this, x, y, SCALE / 2));
+    public void addListener(Input input) {
+        addMouseListener(input);
+        addMouseMotionListener(input);
     }
 }
