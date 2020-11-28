@@ -10,69 +10,39 @@ import java.io.IOException;
 /**
  * The Class which have responsibility to draw all GameObjects
  */
-public class Renderer {
 
-    private Box box;
-    private BufferedImage background;
-    private long frame = 0;
+public class Renderer {
+    private int H;
+    private int W;
+    private int[] buffer;
 
     public Renderer(Box box) {
-        this.box = box;
-        setupBackGround();
+        H = box.H;
+        W = box.W;
+        buffer = box.getWindow().getDataBufferInt();
     }
 
-    //Load bg image and setup panel
-    private void setupBackGround() {
-        try {
-            background = ImageIO.read(new File("./resources/bg.png"));
-        } catch (IOException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(new JFrame(), "BG loading error: " + e.getMessage(),
-                    "Error", JOptionPane.ERROR_MESSAGE);
+    private void setPixel(int x, int y, int color, int alpha) {
+        if (x < 0 || x >= W || y < 0 || y >= H || color == alpha) return;
+        buffer[x + y * W] = color;
+    }
+
+    public void renderImage(BxImage image, int sx, int sy, int alpha) {
+        if (alpha == -1) {
+            alpha = image.getPixel(0, 0);
+        }
+        for (int y = 0; y < image.getH(); y++) {
+            for (int x = 0; x < image.getW(); x++) {
+                setPixel(sx + x, sy + y, image.getPixel(x, y), alpha);
+            }
         }
     }
 
-//    @Override
-//    public void paintComponents(Graphics g) {
-//        if (g == null) return;
-//
-//        Neko neko = box.getNeko();
-//        g.drawImage(background, 0, 0, box);
-//        drawCoins(g);
-//        drawImageByScale(g, neko);
-//        g.drawString("frame: " + mainWindow.getFrame() + " fps: " + mainWindow.getFps(), 10, 10);
-//    }
-
-//    private void drawImageByScale(Graphics g, GameObject go) {
-//        int x = go.getX() - go.getW() * go.getScale() / 2;
-//        int y = go.getY() - go.getH() * go.getScale();
-//        int w = go.getW();
-//        int h = go.getH();
-//        if (go.getScale() == 1) {
-//            g.drawImage(go.getImage(box.getFrame()), x, y, this);
-//        } else {
-//            g.drawImage(go.getImage(box.getFrame()), x, y, x + w * go.getScale(), y + h * go.getScale(),
-//                    0, 0, w, h, mainWindow);
-//        }
-//    }
-
-//    private void drawCoins(Graphics g) {
-//        for(var coin: mainWindow.getCoins()) drawImageByScale(g, coin);
-//    }
-
-    public void update() {
-        int frame = box.getFrame();
-
-        //Update Neko
-        Neko neko = box.getNeko();
-        neko.update(frame);
-
-        //Uodate coin after Neko
-        var coins = box.getCoins();
-        for (var coin: coins) coin.update(frame);
-    }
-
-    public void render(boolean showFps) {
-        if (showFps) System.out.printf("frame: %d fps: %d\n", box.getFrame(), box.getFps());
+    public void clear(int color) {
+        for (int i = 0; i < buffer.length; i++) {
+            buffer[i] = 0xFFFFFFFF;
+        }
     }
 }
+
+

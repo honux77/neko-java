@@ -14,6 +14,8 @@ public class Box implements Runnable {
     public static final double GAP = 1.0 / 60;
     public static final int DELAY = 60 / 2;
     public static final int SCALE = 2;
+    public static final int W = 320;
+    public static final int H = 540;
 
     private int fps;
     private int frame = 0;
@@ -36,23 +38,9 @@ public class Box implements Runnable {
         return coins;
     }
 
-    private void init(String title) {
-        thread = new Thread(this);
-        renderer = new Renderer(this);
-        input = new Input(this);
-        neko = new Neko(this, DELAY, SCALE);
-        //mainWindow = new MainWindow(title, this);
-        //mainWindow.addListener(input);
-    }
-
     public int getFps() {
         return fps;
     }
-
-    private void initOthers() {
-        thread = new Thread(this);
-    }
-
 
     public Neko getNeko() {
         return neko;
@@ -66,12 +54,23 @@ public class Box implements Runnable {
         return frame;
     }
 
+    public Input getInput() {
+        return input;
+    }
+
     public void update() {
-        renderer.update();
+    }
+
+    private void init(String title) {
+        thread = new Thread(this);
+        input = new Input(this);
+        neko = new Neko(this, DELAY, SCALE);
+        mainWindow = new MainWindow(title, this);
+        renderer = new Renderer(this);
     }
 
     private void render() {
-        renderer.render(true);
+        //renderer.renderImage(neko.getImage(frame));
     }
 
     public void addCoin(int x, int y) {
@@ -121,12 +120,15 @@ public class Box implements Runnable {
                     e.printStackTrace();
                 }
             }
-
         }
     }
 
     public static void main(String[] args) {
         Box box = new Box("Simple Neko App v0.2");
         box.start();
+    }
+
+    public MainWindow getWindow() {
+        return mainWindow;
     }
 }
