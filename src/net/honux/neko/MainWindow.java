@@ -45,7 +45,7 @@ public class MainWindow extends JFrame implements Runnable {
     }
 
     private void initObjects() {
-        neko = new Neko(this, DELAY);
+        neko = new Neko(this, DELAY, SCALE);
     }
 
     private void initUI() {
@@ -104,6 +104,7 @@ public class MainWindow extends JFrame implements Runnable {
     }
 
     public void addCoin(int x, int y) {
-        coins.add(new Coin(this, x, y));
+        //smaller coin than Neko
+        coins.add(new Coin(this, x, y, SCALE / 2));
     }
 }

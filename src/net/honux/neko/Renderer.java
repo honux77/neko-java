@@ -58,9 +58,16 @@ public class Renderer extends JPanel {
     }
 
     public void update() {
-        System.out.println(window.getFrame());
+        int frame = window.getFrame();
+        System.out.println(frame);
+
+        //Update Neko
         Neko neko = window.getNeko();
-        neko.update(window.getFrame());
+        neko.update(frame);
+
+        //Uodate coin after Neko
+        var coins = window.getCoins();
+        for (var coin: coins) coin.update(frame);
     }
 
     public void render() {

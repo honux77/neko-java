@@ -4,14 +4,14 @@ import com.sun.tools.javac.Main;
 
 public class Neko extends GameObject {
 
-    public Neko(MainWindow window, int delay) {
-        super(window, delay);
+    public Neko(MainWindow window, int delay, int scale) {
+        super(window, delay, scale);
         setStatus(CatStatus.STAND.toString(), 0);
     }
 
     //Neko class test
     public static void main(String[] args) {
-        Neko neko = new Neko(null, 3);
+        Neko neko = new Neko(null, 3, 1);
         for (int i = 0; i < 30; i++) {
             System.out.println(neko.getImage(i));
         }

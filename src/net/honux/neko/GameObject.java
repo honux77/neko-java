@@ -12,14 +12,15 @@ import java.util.Map;
 
 public abstract class GameObject {
 
-    private final MainWindow window;
-    protected int w, h;
+    protected final MainWindow mainWindow;
+    protected int w, h, size;
     protected double x, y, dx, dy;
     private Map<Integer, BufferedImage> allImages = new HashMap<>();
     private Map<String, List<BufferedImage>> images = new HashMap<>();
     private List<String> allStatus = new ArrayList<>();
     protected int delay = 1;
 
+    private int scale =  1;
     private int lastFrame;
     protected String status;
 
@@ -29,9 +30,18 @@ public abstract class GameObject {
 
     public abstract void update(int frame);
 
-    public GameObject(MainWindow window, int delay) {
-        this.window = window;
+    public boolean collideWith(GameObject other) {
+        int sx = (int) x;
+        int sy= (int) y;
+        int dx = (int) other.x;
+        int dy = (int) other.y;
+        return (sx - dx) * (sx - dx) + (sy - dy) * (sy - dy) <= size * size + other.size * other.size;
+    }
+
+    public GameObject(MainWindow mainWindow, int delay, int scale) {
+        this.mainWindow = mainWindow;
         this.delay = delay;
+        this.scale = scale;
         loadAllImages();
         setWH();
         addStatusForImages();
@@ -53,6 +63,7 @@ public abstract class GameObject {
     private void setWH() {
         w = allImages.get(1).getWidth();
         h = allImages.get(1).getHeight();
+        size = w / 2 * scale;
     }
 
     public int getW() {
@@ -87,7 +98,7 @@ public abstract class GameObject {
     }
 
     protected void setStatusImages(String status, int... num) {
-        for (var i: num) {
+        for (var i : num) {
             images.get(status).add(allImages.get(i));
         }
     }
