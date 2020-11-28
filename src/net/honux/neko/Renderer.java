@@ -7,6 +7,9 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * The Class which have responsibility to draw all GameObjects
+ */
 public class Renderer extends JPanel {
 
     private MainWindow window;
@@ -37,13 +40,8 @@ public class Renderer extends JPanel {
 
         Neko neko = window.getNeko();
         g.drawImage(background, 0, 0, window);
-
-        int w = neko.getW();
-        int h = neko.getH();
-        int x = neko.getX();
-        int y= neko.getY();
-        drawImageByScale(g, neko);
         drawCoins(g);
+        drawImageByScale(g, neko);
     }
 
     private void drawImageByScale(Graphics g, GameObject go) {
