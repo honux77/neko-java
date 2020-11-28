@@ -13,7 +13,6 @@ public class Box implements Runnable {
 
     public static final double GAP = 1.0 / 60;
     public static final int DELAY = 60 / 2;
-    public static final int SCALE = 2;
     public static final int W = 320;
     public static final int H = 540;
 
@@ -65,7 +64,7 @@ public class Box implements Runnable {
     private void init(String title) {
         thread = new Thread(this);
         input = new Input(this);
-        neko = new Neko(this, DELAY, 3);
+        neko = new Neko(this, DELAY, 2);
         neko.setPosition(W / 2, H / 2);
         mainWindow = new MainWindow(title, this);
         renderer = new Renderer(this);
@@ -92,7 +91,7 @@ public class Box implements Runnable {
                 return;
             }
         }
-        coins.add(new Coin(this, x, y, SCALE / 2));
+        coins.add(new Coin(this, x, y, 1));
     }
 
     @Override
