@@ -12,12 +12,12 @@ import java.io.IOException;
  */
 public class Renderer extends JPanel {
 
-    private MainWindow window;
+    private MainWindow mainWindow;
     private BufferedImage background;
     private long frame = 0;
 
     public Renderer(MainWindow window) {
-        this.window = window;
+        this.mainWindow = window;
         setupBackGround();
     }
 
@@ -38,35 +38,40 @@ public class Renderer extends JPanel {
     public void paintComponents(Graphics g) {
         if (g == null) return;
 
-        Neko neko = window.getNeko();
-        g.drawImage(background, 0, 0, window);
+        Neko neko = mainWindow.getNeko();
+        g.drawImage(background, 0, 0, mainWindow);
         drawCoins(g);
         drawImageByScale(g, neko);
+        g.drawString("frame: " + mainWindow.getFrame() + " fps: " + mainWindow.getFps(), 10, 10);
     }
 
     private void drawImageByScale(Graphics g, GameObject go) {
-        int x = go.getX() - go.getW() * MainWindow.SCALE / 2;
-        int y = go.getY() - go.getH() * MainWindow.SCALE;
+        int x = go.getX() - go.getW() * go.getScale() / 2;
+        int y = go.getY() - go.getH() * go.getScale();
         int w = go.getW();
         int h = go.getH();
-        g.drawImage(go.getImage(window.getFrame()), x, y, x + w * MainWindow.SCALE, y + h * MainWindow.SCALE,
-                0, 0, w, h, window);
+        if (go.getScale() == 1) {
+            g.drawImage(go.getImage(mainWindow.getFrame()), x, y, this);
+        } else {
+            g.drawImage(go.getImage(mainWindow.getFrame()), x, y, x + w * go.getScale(), y + h * go.getScale(),
+                    0, 0, w, h, mainWindow);
+        }
     }
 
     private void drawCoins(Graphics g) {
-        for(var coin: window.getCoins()) drawImageByScale(g, coin);
+        for(var coin: mainWindow.getCoins()) drawImageByScale(g, coin);
     }
 
     public void update() {
-        int frame = window.getFrame();
+        int frame = mainWindow.getFrame();
         System.out.println(frame);
 
         //Update Neko
-        Neko neko = window.getNeko();
+        Neko neko = mainWindow.getNeko();
         neko.update(frame);
 
         //Uodate coin after Neko
-        var coins = window.getCoins();
+        var coins = mainWindow.getCoins();
         for (var coin: coins) coin.update(frame);
     }
 

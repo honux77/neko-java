@@ -9,15 +9,17 @@ public class MainWindow extends JFrame implements Runnable {
 
     private final String TITLE = "Neko App";
     public final static int SCALE = 2;
-    public static final int GAP = 1000 / 60;
+    public static final double GAP = 1.0 / 60;
     public static final int DELAY = 60 / 2;
 
+    private int fps;
     private Neko neko;
     private List<Coin> coins = new ArrayList<>();
     private int frame = 0;
     private Thread thread;
     private Input input;
     private Renderer renderer;
+    private boolean running;
 
     public MainWindow() {
         initObjects();
@@ -32,6 +34,10 @@ public class MainWindow extends JFrame implements Runnable {
 
     public List<Coin> getCoins() {
         return coins;
+    }
+
+    public int getFps() {
+        return fps;
     }
 
     private void initComponent() {
@@ -90,16 +96,47 @@ public class MainWindow extends JFrame implements Runnable {
 
     @Override
     public void run() {
-        boolean running = true;
+        running = true;
+        boolean render = false;
+        final double OB = 1000_000_000.0f;
+        double now;
+        double lastTime = System.nanoTime() / OB;
+        double passedTime;
+        double frameTime = 0;
+        double unprocessedTime = 0;
+        int lastFrame = 0;
+
         while (running) {
-            try {
-                Thread.sleep(GAP);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            now = System.nanoTime() / OB;
+            passedTime = now - lastTime;
+            unprocessedTime += passedTime;
+            frameTime += passedTime;
+            lastTime = now;
+
+            if (frameTime >= 1.0) {
+                fps = frame - lastFrame;
+                lastFrame = frame;
+                frameTime = 0;
             }
-            frame++;
-            update();
-            render();
+
+            while (unprocessedTime > GAP) {
+                unprocessedTime -= GAP;
+                render = true;
+                frame++;
+                update();
+            }
+
+            if (render) {
+                render = false;
+                render();
+            } else {
+                try {
+                    Thread.sleep(1);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
         }
     }
 

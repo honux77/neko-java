@@ -38,6 +38,10 @@ public abstract class GameObject {
         return (sx - dx) * (sx - dx) + (sy - dy) * (sy - dy) <= size * size + other.size * other.size;
     }
 
+    public int getScale() {
+        return scale;
+    }
+
     public GameObject(MainWindow mainWindow, int delay, int scale) {
         this.mainWindow = mainWindow;
         this.delay = delay;
