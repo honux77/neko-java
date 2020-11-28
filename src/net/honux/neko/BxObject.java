@@ -11,6 +11,8 @@ public abstract class BxObject {
     protected final Box box;
     protected int w, h, size;
     protected double x, y, dx, dy;
+    protected double v = 0;
+
     private Map<Integer, BxImage> allImages = new HashMap<>();
     private Map<String, List<BxImage>> images = new HashMap<>();
     private List<String> allStatus = new ArrayList<>();
@@ -117,6 +119,14 @@ public abstract class BxObject {
 
     public boolean atPosition(int x, int y) {
         return (x - this.x) * (x - this.x) + (y - this.y) * (y - this.y) < size * size * 1.44;
+    }
+
+    @Override
+    public String toString() {
+        return "BxObject{" +
+                "x=" + x +
+                ", y=" + y +
+                '}';
     }
 }
 
