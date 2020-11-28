@@ -7,19 +7,30 @@ import java.io.IOException;
 
 public class BxImage {
 
-    private int w, h;
+    private int w, h, scale = 1;
     private int[] buffer;
 
     public int getW() {
-        return w;
+        return w * scale;
     }
 
     public int getH() {
-        return h;
+        return h * scale;
+    }
+
+    public int[] getBuffer() {
+        return buffer;
     }
 
     public int getPixel(int x, int y) {
-        return buffer[x + y * w];
+        int ox = x / scale;
+        int oy = y / scale;
+        return buffer[ox + oy * h];
+    }
+
+    public BxImage(String path, int scale) {
+        this.scale = scale;
+        loadImage(path);
     }
 
     public BxImage(String path) {

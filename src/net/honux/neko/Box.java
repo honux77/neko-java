@@ -59,22 +59,39 @@ public class Box implements Runnable {
     }
 
     public void update() {
+        neko.update(frame);
     }
 
     private void init(String title) {
         thread = new Thread(this);
         input = new Input(this);
         neko = new Neko(this, DELAY, SCALE);
+        neko.setPosition(W / 2, H / 2);
         mainWindow = new MainWindow(title, this);
         renderer = new Renderer(this);
+        renderer.setBackground(new BxImage("./resources/bg.png"));
     }
 
     private void render() {
-        //renderer.renderImage(neko.getImage(frame));
+        //System.out.printf("frame: %d fps: %d\n", frame, fps);
+        renderer.clear(Renderer.COLOR_BG);
+
+        for (var coin: coins) {
+            renderer.renderBxObject(coin, frame);
+        }
+        renderer.renderBxObject(neko, frame);
+
+        mainWindow.render(frame, fps);
     }
 
-    public void addCoin(int x, int y) {
+    public void addOrRemoveCoin(int x, int y) {
         //smaller coin than Neko
+        for (int i = 0; i < coins.size(); i++) {
+            if (coins.get(i).atPosition(x, y)) {
+                coins.remove(i);
+                return;
+            }
+        }
         coins.add(new Coin(this, x, y, SCALE / 2));
     }
 

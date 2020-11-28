@@ -42,15 +42,15 @@ public class MainWindow extends JFrame {
         return ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
     }
 
-    public void render(int fps, long frame) {
+    public void render(int frame, int fps) {
         graphics.drawImage(image, 0, 0, canvas.getWidth(), canvas.getHeight(), this);
-        graphics.drawString(frame + " : " + fps, 20, 20);
+        graphics.drawString("frame: " + frame + " fps: " + fps, 5, 15);
         canvas.getBufferStrategy().show();
     }
 
     private void initFrame(String title) {
         setTitle(title);
-        setPreferredSize(new Dimension(box.W, box.H));
+        //setPreferredSize(new Dimension(box.W, box.H));
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
         add(canvas, BorderLayout.CENTER);

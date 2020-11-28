@@ -1,8 +1,6 @@
 package net.honux.neko;
 
-import com.sun.tools.javac.Main;
-
-public class Neko extends GameObject {
+public class Neko extends BxObject {
 
     public Neko(Box box, int delay, int scale) {
         super(box, delay, scale);
@@ -58,7 +56,7 @@ public class Neko extends GameObject {
             setStatus(CatStatus.STAND.toString(), frame);
         }
 
-        System.out.printf("Neko: %s\n", status);
+        //System.out.printf("Neko: %s\n", status);
     }
 
     private boolean checkFrame(int frame, int time) {
