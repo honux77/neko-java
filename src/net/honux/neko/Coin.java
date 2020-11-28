@@ -1,17 +1,16 @@
 package net.honux.neko;
 
-import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.List;
-
-public class Coin extends GameObject{
+public class Coin extends BxObject {
 
     private final String NORMAL = "NORMAL";
-    public Coin(MainWindow w, int x, int y) {
-        super(w, w.DELAY);
+    private boolean show = true;
+
+    public Coin(Box box, int x, int y, int scale) {
+        super(box, box.DELAY, scale);
         status=NORMAL;
         setPosition(x, y);
     }
+
     @Override
     public void addStatusForImages() {
         addStatus(NORMAL);
@@ -24,5 +23,8 @@ public class Coin extends GameObject{
 
     @Override
     public void update(int frame) {
+        if (collideWith(box.getNeko())) {
+            System.out.printf("고양이와 충돌: %.2f %.2f\n", x, y);
+        }
     }
 }

@@ -1,109 +1,70 @@
 package net.honux.neko;
 
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.*;
 import java.awt.*;
 
-public class MainWindow extends JFrame implements Runnable {
+public class MainWindow extends JFrame {
 
     private final String TITLE = "Neko App";
     public final static int SCALE = 2;
-    public static final int GAP = 1000 / 60;
+    public static final double GAP = 1.0 / 60;
     public static final int DELAY = 60 / 2;
 
-    private Neko neko;
     private List<Coin> coins = new ArrayList<>();
     private int frame = 0;
-    private Thread thread;
-    private Input input;
-    private Renderer renderer;
+    private Box box;
 
-    public MainWindow() {
-        initObjects();
-        initComponent();
-        initUI();
-        initOthers();
+    private BufferedImage image;
+    private Canvas canvas;
+    private Graphics graphics;
+
+    public MainWindow(String title, Box box) {
+        this.box = box;
+        initResource();
+        initFrame(title);
+        addEventListener(box.getInput());
     }
 
-    public Input getInput() {
-        return input;
+    private void initResource() {
+        Dimension d = new Dimension(box.W, box.H);
+        image = new BufferedImage(box.W, box.H, BufferedImage.TYPE_INT_RGB);
+        canvas = new Canvas();
+        canvas.setPreferredSize(d);
+        canvas.setMaximumSize(d);
+        canvas.setMinimumSize(d);
     }
 
-    public List<Coin> getCoins() {
-        return coins;
+    public int[] getDataBufferInt() {
+        return ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
     }
 
-    private void initComponent() {
-        renderer = new Renderer(this);
-        input = new Input(this);
-
+    public void render(int frame, int fps) {
+        graphics.drawImage(image, 0, 0, canvas.getWidth(), canvas.getHeight(), this);
+        graphics.drawString("frame: " + frame + " fps: " + fps, 5, 15);
+        canvas.getBufferStrategy().show();
     }
 
-    private void initOthers() {
-        thread = new Thread(this);
-    }
-
-    private void initObjects() {
-        neko = new Neko(this, DELAY);
-    }
-
-    private void initUI() {
-        setTitle(TITLE);
+    private void initFrame(String title) {
+        setTitle(title);
+        //setPreferredSize(new Dimension(box.W, box.H));
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
-        add(renderer, BorderLayout.CENTER);
-        setSize(renderer.getSize());
-        addMouseListener(input);
-        addMouseMotionListener(input);
+        add(canvas, BorderLayout.CENTER);
+        pack();
         setLocationRelativeTo(null);
         setResizable(false);
-        neko.setPosition(getWidth() / 2, getHeight() / 2);
+        setVisible(true);
 
+        canvas.createBufferStrategy(2);
+        graphics = canvas.getBufferStrategy().getDrawGraphics();
     }
 
-    public Neko getNeko() {
-        return neko;
-    }
-
-    public void start() {
-        thread.start();
-    }
-
-    public int getFrame() {
-        return frame;
-    }
-
-    public void update() {
-        renderer.update();
-    }
-
-    private void render() {
-        renderer.render();
-    }
-
-    public static void main(String[] args) {
-        MainWindow mainWindow = new MainWindow();
-        mainWindow.setVisible(true);
-        mainWindow.start();
-    }
-
-    @Override
-    public void run() {
-        boolean running = true;
-        while (running) {
-            try {
-                Thread.sleep(GAP);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            frame++;
-            update();
-            render();
-        }
-    }
-
-    public void addCoin(int x, int y) {
-        coins.add(new Coin(this, x, y));
+    public void addEventListener(Input input) {
+        canvas.addMouseListener(input);
+        canvas.addMouseMotionListener(input);
     }
 }

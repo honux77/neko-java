@@ -1,71 +1,59 @@
 package net.honux.neko;
 
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+/**
+ * The Class which have responsibility to draw all GameObjects
+ */
 
-public class Renderer extends JPanel {
+public class Renderer {
+    public final static int AUTO_ALPHA = -1;
+    public final static int NO_ALPHA = -2;
+    public final static int COLOR_BG = -3;
 
-    private MainWindow window;
-    private BufferedImage background;
-    private long frame = 0;
 
-    public Renderer(MainWindow window) {
-        this.window = window;
-        setupBackGround();
+    private int H;
+    private int W;
+    private int[] buffer;
+    private int[] bgBuffer;
+
+    public Renderer(Box box) {
+        H = box.H;
+        W = box.W;
+        buffer = box.getWindow().getDataBufferInt();
     }
 
-    //Load bg image and setup panel
-    private void setupBackGround() {
-        try {
-            background = ImageIO.read(new File("./resources/bg.png"));
-        } catch (IOException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(new JFrame(), "BG loading error: " + e.getMessage(),
-                    "Error", JOptionPane.ERROR_MESSAGE);
+    public void setBackground(BxImage bg) {
+        bgBuffer = bg.getBuffer();
+    }
+
+    private void setPixel(int x, int y, int color, int alpha) {
+        if (x < 0 || x >= W || y < 0 || y >= H || color == alpha) return;
+        buffer[x + y * W] = color;
+    }
+
+    public void renderBxObject(BxObject go, int frame) {
+        renderImage(go.getImage(frame), go.getX() - go.size / 2, go.getY() - go.size / 2,-1);
+    }
+
+    public void renderImage(BxImage image, int sx, int sy, int alpha) {
+        if (alpha == AUTO_ALPHA) {
+            alpha = image.getPixel(0, 0);
         }
-        setDoubleBuffered(true);
-        setSize(background.getWidth(), background.getHeight());
+        for (int y = 0; y < image.getH(); y++) {
+            for (int x = 0; x < image.getW(); x++) {
+                setPixel(sx + x, sy + y, image.getPixel(x, y), alpha);
+            }
+        }
     }
 
-    @Override
-    public void paintComponents(Graphics g) {
-        if (g == null) return;
-
-        Neko neko = window.getNeko();
-        g.drawImage(background, 0, 0, window);
-
-        int w = neko.getW();
-        int h = neko.getH();
-        int x = neko.getX();
-        int y= neko.getY();
-        drawImageByScale(g, neko);
-        drawCoins(g);
-    }
-
-    private void drawImageByScale(Graphics g, GameObject go) {
-        int x = go.getX() - go.getW() * MainWindow.SCALE / 2;
-        int y = go.getY() - go.getH() * MainWindow.SCALE;
-        int w = go.getW();
-        int h = go.getH();
-        g.drawImage(go.getImage(window.getFrame()), x, y, x + w * MainWindow.SCALE, y + h * MainWindow.SCALE,
-                0, 0, w, h, window);
-    }
-
-    private void drawCoins(Graphics g) {
-        for(var coin: window.getCoins()) drawImageByScale(g, coin);
-    }
-
-    public void update() {
-        System.out.println(window.getFrame());
-        Neko neko = window.getNeko();
-        neko.update(window.getFrame());
-    }
-
-    public void render() {
-        paintComponents(this.getGraphics());
+    public void clear(int color) {
+        for (int i = 0; i < buffer.length; i++) {
+            if (color == COLOR_BG) {
+                buffer[i] = bgBuffer[i];
+            } else {
+                buffer[i] = color;
+            }
+        }
     }
 }
+
+

@@ -1,17 +1,15 @@
 package net.honux.neko;
 
-import com.sun.tools.javac.Main;
+public class Neko extends BxObject {
 
-public class Neko extends GameObject {
-
-    public Neko(MainWindow window, int delay) {
-        super(window, delay);
+    public Neko(Box box, int delay, int scale) {
+        super(box, delay, scale);
         setStatus(CatStatus.STAND.toString(), 0);
     }
 
     //Neko class test
     public static void main(String[] args) {
-        Neko neko = new Neko(null, 3);
+        Neko neko = new Neko(null, 3, 1);
         for (int i = 0; i < 30; i++) {
             System.out.println(neko.getImage(i));
         }
@@ -58,7 +56,7 @@ public class Neko extends GameObject {
             setStatus(CatStatus.STAND.toString(), frame);
         }
 
-        System.out.println(status);
+        //System.out.printf("Neko: %s\n", status);
     }
 
     private boolean checkFrame(int frame, int time) {

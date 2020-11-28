@@ -6,13 +6,13 @@ import java.awt.event.MouseMotionListener;
 
 public class Input implements MouseListener, MouseMotionListener {
 
-    private MainWindow m;
+    private Box box;
 
     private int mouseX;
     private int mouseY;
 
-    public Input(MainWindow m) {
-        this.m = m;
+    public Input(Box box) {
+        this.box = box;
     }
 
     public int getMouseX() {
@@ -25,7 +25,7 @@ public class Input implements MouseListener, MouseMotionListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        m.addCoin(e.getX(), e.getY());
+        box.addOrRemoveCoin(e.getX(), e.getY());
     }
 
     @Override
@@ -57,5 +57,6 @@ public class Input implements MouseListener, MouseMotionListener {
     public void mouseMoved(MouseEvent e) {
         mouseX = e.getX();
         mouseY = e.getY();
+        System.out.println("mouse at: "+ mouseX + ": " + mouseY);
     }
 }

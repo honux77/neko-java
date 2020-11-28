@@ -1,25 +1,22 @@
 package net.honux.neko;
 
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class GameObject {
+public abstract class BxObject {
 
-    private final MainWindow window;
-    protected int w, h;
+    protected final Box box;
+    protected int w, h, size;
     protected double x, y, dx, dy;
-    private Map<Integer, BufferedImage> allImages = new HashMap<>();
-    private Map<String, List<BufferedImage>> images = new HashMap<>();
+    private Map<Integer, BxImage> allImages = new HashMap<>();
+    private Map<String, List<BxImage>> images = new HashMap<>();
     private List<String> allStatus = new ArrayList<>();
     protected int delay = 1;
 
+    private int scale = 1;
     private int lastFrame;
     protected String status;
 
@@ -29,9 +26,18 @@ public abstract class GameObject {
 
     public abstract void update(int frame);
 
-    public GameObject(MainWindow window, int delay) {
-        this.window = window;
+    public boolean collideWith(BxObject other) {
+        int sx = (int) x;
+        int sy = (int) y;
+        int dx = (int) other.x;
+        int dy = (int) other.y;
+        return (sx - dx) * (sx - dx) + (sy - dy) * (sy - dy) <= size * size + other.size * other.size;
+    }
+
+    public BxObject(Box box, int delay, int scale) {
+        this.box = box;
         this.delay = delay;
+        this.scale = scale;
         loadAllImages();
         setWH();
         addStatusForImages();
@@ -51,8 +57,9 @@ public abstract class GameObject {
     }
 
     private void setWH() {
-        w = allImages.get(1).getWidth();
-        h = allImages.get(1).getHeight();
+        w = allImages.get(1).getW();
+        h = allImages.get(1).getH();
+        size = w / 2 * scale;
     }
 
     public int getW() {
@@ -87,12 +94,12 @@ public abstract class GameObject {
     }
 
     protected void setStatusImages(String status, int... num) {
-        for (var i: num) {
+        for (var i : num) {
             images.get(status).add(allImages.get(i));
         }
     }
 
-    public BufferedImage getImage(int frame) {
+    public BxImage getImage(int frame) {
         var subImages = images.get(status);
         return subImages.get(frame / delay % subImages.size());
     }
@@ -104,19 +111,13 @@ public abstract class GameObject {
         File dir = new File(dirname);
         for (var img : dir.list()) {
             int idx = Integer.parseInt(img.split("\\.")[0]);
-            allImages.put(idx, readImage(dirname + "/" + img));
+            allImages.put(idx, new BxImage(dirname + "/" + img,  scale));
         }
     }
 
-    private BufferedImage readImage(String path) {
-        try {
-            return ImageIO.read(new File(path));
-        } catch (IOException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(new JFrame(), e.getMessage(), "Image Load Error", JOptionPane.ERROR_MESSAGE);
-            System.exit(1);
-            return null;
-        }
+    public boolean atPosition(int x, int y) {
+        return (x - this.x) * (x - this.x) + (y - this.y) * (y - this.y) < size * size * 1.44;
     }
 }
+
 
