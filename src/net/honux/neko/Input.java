@@ -8,19 +8,8 @@ public class Input implements MouseListener, MouseMotionListener {
 
     private Box box;
 
-    private int mouseX;
-    private int mouseY;
-
     public Input(Box box) {
         this.box = box;
-    }
-
-    public int getMouseX() {
-        return mouseX;
-    }
-
-    public int getMouseY() {
-        return mouseY;
     }
 
     @Override
@@ -45,7 +34,6 @@ public class Input implements MouseListener, MouseMotionListener {
 
     @Override
     public void mouseExited(MouseEvent e) {
-        System.out.println("탈출");
     }
 
     @Override
@@ -55,8 +43,5 @@ public class Input implements MouseListener, MouseMotionListener {
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        mouseX = e.getX();
-        mouseY = e.getY();
-        System.out.println("mouse at: "+ mouseX + ": " + mouseY);
     }
 }
