@@ -4,11 +4,13 @@ public class Coin extends BxObject {
 
     private final String NORMAL = "NORMAL";
     private boolean show = true;
+    private int initFrame;
 
-    public Coin(Box box, int x, int y, int scale) {
+    public Coin(Box box, int x, int y, int scale, int frame) {
         super(box, box.DELAY, scale);
         status=NORMAL;
         setPosition(x, y);
+        initFrame = frame;
     }
 
     @Override
@@ -19,6 +21,12 @@ public class Coin extends BxObject {
     @Override
     public void addStatusImages() {
         setStatusImages(NORMAL, 1, 2, 3, 4);
+    }
+
+
+    @Override
+    public BxImage getImage(int frame) {
+        return super.getImage(frame + initFrame);
     }
 
     @Override

@@ -1,7 +1,5 @@
 package net.honux.neko;
 
-import com.sun.tools.javac.Main;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -91,7 +89,7 @@ public class Box implements Runnable {
                 return;
             }
         }
-        coins.add(new Coin(this, x, y, 1));
+        coins.add(new Coin(this, x, y, 1, frame));
     }
 
     @Override
